@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image for $IMAGE_REPO_NAME     # --build-arg BASE_IMAGE=XYZ
+      - export APPS_JSON_BASE64=$(base64 -w 0 .aseno/apps.json)
+      - > 
+        docker build 
+        --build-arg=FRAPPE_PATH=https://github.com/frappe/frappe 
+        --build-arg=FRAPPE_BRANCH=version-14 
+        --build-arg=PYTHON_VERSION=3.10.5 
+        --build-arg=NODE_VERSION=16.18.0 
+        --build-arg=APPS_JSON_BASE64=$APPS_JSON_BASE64 
+        --tag=$IMAGE_REPO_NAME:$IMAGE_TAG 
+        --file=images/custom/Containerfile .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG      
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
