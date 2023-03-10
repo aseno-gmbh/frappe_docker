@@ -12,8 +12,6 @@ jobs:
   build-and-push-docker-image:
     name: Build and push to docker.io
     runs-on: ubuntu-latest
-    env:
-      FRAPPE_APPS: MySuffix
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,10 +24,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: export APPS_JSON_BASE64
+      - name: export FRAPPE_APPS
         run: |
-          echo export var APPS_JSON_BASE64
-          export APPS_JSON_BASE64=$(base64 -w 0 ./.aseno/apps.json)
+          echo export var FRAPPE_APPS
+          echo "FRAPPE_APPS=$(base64 -w 0 ./.aseno/apps.json)" >> $GITHUB_ENV
       - name: Build image and push to Docker Hub and GitHub Container Registry
         uses: docker/build-push-action@v2
         with:
@@ -41,7 +39,7 @@ jobs:
             FRAPPE_BRANCH=version-14
             PYTHON_VERSION=3.10.5
             NODE_VERSION=16.18.0
-            APPS_JSON_BASE64=${{ APPS_JSON_BASE64 }}
+            APPS_JSON_BASE64=${{ env.FRAPPE_APPS }}
           # Note: tags has to be all lower-case
           tags: |
             aseno/frappe-erpnext-health:1.0.2 
