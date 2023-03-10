@@ -3,7 +3,7 @@ name: Build and Publish
 on:
   # run it on push to the default repository branch
   push:
-    branches: [release-1.0.0]
+    branches: [cdp-1.0.0]
   # run it during pull request
   pull_request:  
 
@@ -47,6 +47,6 @@ jobs:
             aseno/frappe-erpnext-health:1.0.2 
             aseno/frappe-erpnext-health:latest
           # build on feature branches, push only on release-1.0.0 branch
-          push: ${{ github.ref == 'refs/heads/release-1.0.0' }}
+          push: ${{ github.ref == 'refs/heads/cdp-1.0.0' }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
