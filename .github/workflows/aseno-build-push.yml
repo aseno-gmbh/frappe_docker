@@ -42,7 +42,7 @@ jobs:
             APPS_JSON_BASE64=${{ env.FRAPPE_APPS }}
           # Note: tags has to be all lower-case
           tags: |
-            aseno/frappe-erpnext-health:1.0.2 
+            aseno/frappe-erpnext-health:1.0.3 
             aseno/frappe-erpnext-health:latest
           # build on feature branches, push only on release-1.0.0 branch
           push: ${{ github.ref == 'refs/heads/cdp-1.0.0' }}

@@ -16,6 +16,8 @@ RUN useradd -ms /bin/bash frappe \
     git \
     vim \
     nginx \
+    htop \
+    procps \
     gettext-base \
     # weasyprint dependencies
     libpango-1.0-0 \
